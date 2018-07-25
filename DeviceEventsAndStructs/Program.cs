@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DLMExtension;
 
 namespace DeviceEventsAndStructs
 {
@@ -10,6 +7,11 @@ namespace DeviceEventsAndStructs
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Started ...");
+            DriverVersionGetter dg = new DriverVersionGetter();
+            Console.WriteLine(dg.GetDriverVersion());
+            Console.WriteLine("End ...");
+            Console.ReadLine();
         }
     }
 }
