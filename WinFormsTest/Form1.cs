@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static WinFormsTest.USBEventListener;
 
 namespace WinFormsTest
 {
@@ -25,23 +27,25 @@ namespace WinFormsTest
                 switch ((int)message.WParam)
                 {
                     case USBEventListener.NewUsbDeviceArrived:
-                        DeviceAdded();
+                        DeviceAdded(message);
                         break;
                     case USBEventListener.UsbDeviceRemoved:
-                        DeviceRemoved();
+                        DeviceRemoved(message);
                         break;
                 }
             }
         }
 
-        private void DeviceAdded()
+        private void DeviceAdded(Message message)
         {
             this.textBox1.Text = "Nesto utaknuto, da prostis...";
         }
 
-        private void DeviceRemoved()
+        private void DeviceRemoved(Message message)
         {
-            this.textBox1.Text = "Nesto iscupano";
+            dynamic eventOrigin = Marshal.PtrToStructure(message.LParam, typeof(DevInterface));
+            string name = eventOrigin.Name.ToString();
+            this.textBox1.AppendText("Nesto iscupano, ali sta? To nisam ja to je moja Shauma!!!  " + name);
         }
     }
 }

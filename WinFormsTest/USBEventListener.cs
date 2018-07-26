@@ -11,14 +11,15 @@ namespace WinFormsTest
         [DllImport("user32.dll")]
         private static extern bool UnregisterDeviceNotification(IntPtr handle);
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct DevInterface
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct DevInterface
         {
-            internal int Size;
-            internal int DeviceType;
-            internal int Reserved;
-            internal Guid ClassGuid;
-            internal short Name;
+            public int Size;
+            public int DeviceType;
+            public int Reserved;
+            public Guid ClassGuid;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
+            public string Name;
         }
 
         private const int UsbDeviceInterface = 5;
@@ -31,17 +32,17 @@ namespace WinFormsTest
 
         public static void RegisterUsbDeviceNotification(IntPtr windowHandle)
         {
-            DevInterface dbi = new DevInterface
+            DevInterface devInterface = new DevInterface
             {
                 DeviceType = UsbDeviceInterface,
                 Reserved = 0,
                 ClassGuid = DeviceInterrfaceGuid,
-                Name = 0
+                Name = ""
             };
 
-            dbi.Size = Marshal.SizeOf(dbi);
-            IntPtr buffer = Marshal.AllocHGlobal(dbi.Size);
-            Marshal.StructureToPtr(dbi, buffer, true);
+            devInterface.Size = Marshal.SizeOf(devInterface);
+            IntPtr buffer = Marshal.AllocHGlobal(devInterface.Size);
+            Marshal.StructureToPtr(devInterface, buffer, true);
 
             notificationHandle = RegisterDeviceNotification(windowHandle, buffer, 0);
         }
