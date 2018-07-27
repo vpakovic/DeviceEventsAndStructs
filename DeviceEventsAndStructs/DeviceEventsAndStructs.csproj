@@ -43,9 +43,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigManagerAPI.cs" />
+    <Compile Include="DLDevice.cs" />
+    <Compile Include="DLDevicePC.cs" />
+    <Compile Include="DLDeviceTreeBuilder.cs" />
+    <Compile Include="DLMonitor.cs" />
+    <Compile Include="DLDock.cs" />
     <Compile Include="DriverVersionGetter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsDevice.cs" />
+    <Compile Include="WindowsDeviceEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

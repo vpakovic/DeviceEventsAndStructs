@@ -53,8 +53,8 @@ namespace DLMExtension
 
                         if (result == 0)
                         {
-                            string driverVer = GetProperty(deviceInstance, new ConfigManagerAPI.DeviceInfo(new Guid(DEV_INFO_DRIVER_VERSION_GUID), DEV_INFO_DRIVER_VERSION_PID));
-                            string devClass = GetProperty(deviceInstance, new ConfigManagerAPI.DeviceInfo(new Guid(DEV_INFO_DEVICE_CLASS_GUID), DEV_INFO_DEVICE_CLASS_PID));
+                            string driverVer = GetDevicePropertyStr(deviceInstance, new ConfigManagerAPI.DeviceInfo(new Guid(DEV_INFO_DRIVER_VERSION_GUID), DEV_INFO_DRIVER_VERSION_PID));
+                            string devClass = GetDevicePropertyStr(deviceInstance, new ConfigManagerAPI.DeviceInfo(new Guid(DEV_INFO_DEVICE_CLASS_GUID), DEV_INFO_DEVICE_CLASS_PID));
 
                             if (devClass == DEVICE_CLASS_DISPLAY)
                             {
@@ -72,7 +72,7 @@ namespace DLMExtension
 
         }
 
-        private string GetProperty(UInt32 deviceInstance, ConfigManagerAPI.DeviceInfo devPropInfo)
+        private string GetDevicePropertyStr(UInt32 deviceInstance, ConfigManagerAPI.DeviceInfo devPropInfo)
         {
             string property = "";
 
@@ -90,24 +90,7 @@ namespace DLMExtension
 
                 if (result == 0)
                 {
-                    string prop = "";
-                    int offset = 0;
-                    while (offset < bufSize * 2)
-                    {
-                        string character = Marshal.PtrToStringAnsi(IntPtr.Add(buf, offset));
-
-                        if (!String.IsNullOrEmpty(character))
-                        {
-                            prop += character;
-                        }
-                        else
-                        {
-                            property = prop;
-                            break;
-                        }
-
-                        offset += 2;
-                    }
+                    property = ReadNullTerminatedStringFromBuffer(buf, bufSize);
                 }
 
                 Marshal.FreeHGlobal(buf);
@@ -152,6 +135,31 @@ namespace DLMExtension
             }
 
             return resultList;
+        }
+
+        private string ReadNullTerminatedStringFromBuffer(IntPtr buffer, UInt32 bufferSize)
+        {
+            string result = "";
+            string prop = "";
+            int offset = 0;
+            while (offset < bufferSize * 2)
+            {
+                string character = Marshal.PtrToStringAnsi(IntPtr.Add(buffer, offset));
+
+                if (!String.IsNullOrEmpty(character))
+                {
+                    prop += character;
+                }
+                else
+                {
+                    result = prop;
+                    break;
+                }
+
+                offset += 2;
+            }
+
+            return result;
         }
     }
 }
